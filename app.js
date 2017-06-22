@@ -44,6 +44,41 @@ app.get("/feed", function(req, res) {
     res.sendFile(public + "/rotonde.json");
 });
 
+app.get("/portal/:portal", function(req, res) {
+    function resolve(err, resp) {
+        if (err) {
+            res.status(400).json({"error": err});
+        } else {
+            res.json(resp);
+        }
+    }
+
+    request("http://" + req.params.portal, function(err, resp, body) {
+        if (err) {
+            var errorType = err.code + ": invalid domain";
+            resolve(errorType, null)
+            return
+        }
+        try {
+            var jason = JSON.parse(body);
+            resolve(null, jason);
+        } catch (err) {
+            resolve("unable to parse json", null);
+        }
+    });
+});
+
+app.get("/crawl/:start", function(req, res) {
+    request("http://" + req.params.portal, function(err, resp, body) {
+        try {
+            var jason = JSON.parse(body);
+            res.json(jason);
+        } catch (err) {
+            console.warn(err);
+        }
+    });
+});
+
 app.get("/show", function(req, res) {
     var rotondeInfo = JSON.parse(fs.readFileSync(public + "/rotonde.json"));
     var posts = {};
