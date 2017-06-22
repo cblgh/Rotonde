@@ -79,7 +79,7 @@ app.get("/crawl/:start", function(req, res) {
 function crawl(start, req, res) {
     var visited = [];
     visit(start) // visit first node
-        .then(() => {
+        .then(() => { // after everything has been crawled, return the network mapping
             res.json({"network size": visited.length, "network": visited});
         });
 
@@ -99,7 +99,6 @@ function crawl(start, req, res) {
                     var portal = JSON.parse(body);
                     Promise.all(portal.portal.map(visit)).then(resolve);
                 } catch (err) {
-                    console.warn(err);
                     resolve();
                 }
             });
