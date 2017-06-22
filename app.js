@@ -68,16 +68,44 @@ app.get("/portal/:portal", function(req, res) {
     });
 });
 
+app.get("/crawl", function(req, res) {
+    crawl("rotonde.cblgh.org", req, res);
+})
+
 app.get("/crawl/:start", function(req, res) {
-    request("http://" + req.params.portal, function(err, resp, body) {
-        try {
-            var jason = JSON.parse(body);
-            res.json(jason);
-        } catch (err) {
-            console.warn(err);
-        }
-    });
-});
+    crawl(req.params.start, req, res);
+})
+
+function crawl(start, req, res) {
+    var visited = [];
+    visit(start) // visit first node
+        .then(() => {
+            res.json({"network size": visited.length, "network": visited});
+        });
+
+    function visit(portal) {
+        return new Promise((resolve, reject) => {
+            portal = portal.replace(/^https?:\/\//, "");
+
+            if (visited.indexOf(portal) >= 0) {
+                resolve();
+                return;
+            }
+
+            console.log("going to visit", portal);
+            visited.push(portal);
+            request("http://" + portal, (err, resp, body) => {
+                try {
+                    var portal = JSON.parse(body);
+                    Promise.all(portal.portal.map(visit)).then(resolve);
+                } catch (err) {
+                    console.warn(err);
+                    resolve();
+                }
+            });
+        });
+    }
+}
 
 app.get("/show", function(req, res) {
     var rotondeInfo = JSON.parse(fs.readFileSync(public + "/rotonde.json"));
