@@ -85,7 +85,7 @@ function crawl(start, req, res) {
 
     function visit(portal) {
         return new Promise((resolve, reject) => {
-            portal = portal.replace(/^https?:\/\//, "");
+            portal = portal.replace(/^https?:\/\//, "").replace(/\/?$/, "");
 
             if (visited.indexOf(portal) >= 0) {
                 resolve();
