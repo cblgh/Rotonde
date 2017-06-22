@@ -36,12 +36,6 @@ app.use(function(req, res, next) {
        next();
 });
 
-// app.get("/sites", function(req, res) {
-//     res.sendFile(public + "/sites.json");
-//     var src = url.parse(req.headers.referer);
-//     cblgh.logHit(src.host, src.path);
-// });
-
 app.get("/", function(req, res) {
     res.sendFile(public + "/rotonde.json");
 });
@@ -52,36 +46,23 @@ app.get("/feed", function(req, res) {
 
 app.get("/show", function(req, res) {
     var rotondeInfo = JSON.parse(fs.readFileSync(public + "/rotonde.json"));
-    console.log(rotondeInfo);
-    console.log(rotondeInfo["portal"]);
     var posts = {};
     var counter = 0;
 
-    console.log("length");
-    console.log(rotondeInfo["portal"].length);
-
     function handleRequest(counter, name, data) {
-        console.log("counter", counter, name);
-        var jason = JSON.parse(data);
-        console.log("IT'S JASON");
-        console.log(jason);
-        posts[name] = jason;
-        console.log(data);
+        posts[name] = JSON.parse(data);
+        // we've processed all of the portals, send the response
         if (counter == rotondeInfo["portal"].length - 1) {
-            console.log("IT'S TIME!");
             res.json(posts);
         }
     }
-    // do all of the posts
-    // THEN send the response
+
     rotondeInfo["portal"].forEach(function(portal) {
-        console.log(portal);
         request(portal, function(err, resp, body) {
             handleRequest(counter++, portal, body);
         });
     });
 });
-
 
 // app.get("*", function(req, res) {
 //     res.redirect("/");
@@ -91,5 +72,3 @@ var server = http.createServer(app);
 server.listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));
 });
-
-var log = console.log;
