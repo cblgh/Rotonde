@@ -7,7 +7,7 @@ program.parse(process.argv);
 
 var portal = program.args[0];
 if (!portal) {
-    console.error("error: specify a portal to follow");
+    console.error("error: specify a portal to unfollow");
     return;
 }
 
@@ -25,18 +25,19 @@ return new Promise((resolve, reject) => {
     });
 }).then((rotondeItems) => {
     var [rotonde, settings] = rotondeItems;
-    if (rotonde["portal"].indexOf(portal) >= 0) {
-        console.log("already following", portal);
+    var index = rotonde["portal"].indexOf(portal);
+    if (index < 0) {
+        console.log("err: you aren't following", portal);
         return;
     }
-    rotonde["portal"].push(portal); // save the portal we want to follow
+    rotonde["portal"].splice(rotonde["portal"].indexOf(portal), 1); // remove portal we want to unfollow
     fs.writeFile(settings["rotonde location"], JSON.stringify(rotonde), function(err) {
         if (err) { 
-            console.error("err: couldn't save portal to rotonde.json");
+            console.error("err: couldn't save to", settings["rotonde location"]);
             console.error(err);
             return;
         }
-        console.log("now following", portal);
+        console.log("no longer following", portal);
     })
 })
 
