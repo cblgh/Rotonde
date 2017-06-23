@@ -85,8 +85,10 @@ function crawl(start, req, res) {
 
     function visit(portal) {
         return new Promise((resolve, reject) => {
+            // replace http(s) at start, and trailing slashes
             portal = portal.replace(/^https?:\/\//, "").replace(/\/?$/, "");
 
+            // we've already visited this portal
             if (visited.indexOf(portal) >= 0) {
                 resolve();
                 return;
