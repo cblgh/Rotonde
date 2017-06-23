@@ -6,8 +6,8 @@ var crypto = require("crypto");
 
 program.parse(process.argv);
 
-var index = program.args[0];
-if (!index) {
+var index = program.args
+if (!index.length) {
     console.error("error: specify an entry to post to your feed");
     return;
 }
@@ -26,14 +26,16 @@ return new Promise((resolve, reject) => {
     });
 }).then((rotondeItems) => {
     var [rotonde, settings] = rotondeItems;
-    rotonde["feed"].splice(index, 1);
+    index.forEach((i) => {
+        rotonde["feed"].splice(i, 1);
+    });
     fs.writeFile(settings["rotonde location"], JSON.stringify(rotonde), function(err) {
         if (err) { 
             console.error("err: couldn't save to", settings["rotonde location"]);
             console.error(err);
             return;
         }
-        console.log("entry with index", index, "was deleted");
+        console.log("following entries were deleted:", index);
     })
 })
 
