@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 var program = require("commander");
+var osenv = require("osenv");
 var fs = require("fs");
 var path = require("path");
 
@@ -32,7 +33,7 @@ if (path.parse(location).ext) {
 console.log("saving the location of your rotonde file as", location + "...");
 
 return new Promise(function(resolve, reject) {
-    fs.writeFile(".rotonde", JSON.stringify({"rotonde location": rotondeFile}), function(err) {
+    fs.writeFile(path.resolve(osenv.home(), ".config", ".rotonde"), JSON.stringify({"rotonde location": rotondeFile}), function(err) {
         if (err) {
             console.error("failed to create settings file");
         }

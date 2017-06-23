@@ -4,14 +4,15 @@ var program = require("commander");
 
 program
   .version("0.0.1")
-  .command("follow [rotonde domain]", "follow a rotonde domain").alias("f")
-  .command("unfollow [name]", "unfollow a rotonde domain").alias("u")
+  .command("follow [rotonde portal]", "follow a rotonde domain").alias("f")
+  .command("unfollow [rotonde portal]", "unfollow a rotonde domain").alias("u")
   .command("name [name]", "set your profile name").alias("n")
-  .command("location [name]", "set your profile location").alias("l")
-  .command("color [name]", "set your profile color").alias("c")
+  .command("location [location]", "set your profile location").alias("l")
+  .command("color [color]", "set your profile color").alias("c")
   .command("write [entry]", "write an entry").alias("w")
-  .command("feed", "view your feed").alias("f")
-  .command("visit [portal]", "visit a rotonde portal").alias("v")
+  .command("erase [index]", "remove an entry").alias("d")
+  .command("feed [number of posts to show, defaults to 25]", "view your feed").alias("f")
+  // .command("visit [portal]", "visit a rotonde portal").alias("v")
   .command("save", "save the location of your rotonde.json file").alias("p")
   .parse(process.argv);
 
