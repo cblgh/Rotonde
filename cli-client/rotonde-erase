@@ -16,7 +16,11 @@ if (!index.length) {
 util.data().then((rotondeItems) => {
     var [rotonde, settings] = rotondeItems;
     index.forEach((i) => {
-        rotonde["feed"].splice(i, 1);
+        if (i === "last") {
+            rotonde["feed"].pop();
+        } else {
+            rotonde["feed"].splice(i, 1);
+        }
     });
     fs.writeFile(settings["rotonde location"], JSON.stringify(rotonde), function(err) {
         if (err) { 
